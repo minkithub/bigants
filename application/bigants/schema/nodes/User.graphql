@@ -1,0 +1,16 @@
+"""
+사용자
+"""
+type User implements Node {
+  id: ID!
+
+  """
+  이 사용자가 실행했던 예측들의 목록
+  """
+  predictions(first: Int, after: String, last: Int, before: String): StockPredictionConnection!
+
+  """
+  최근 조회 종목
+  """
+  recentStocks: [Stock!]!
+}

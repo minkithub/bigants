@@ -1,0 +1,32 @@
+schema {
+	query: Query
+	mutation: Mutation
+}
+
+type Query {
+	version: String!
+
+	"""
+	우리 앱에서 분석 가능한 주식의 목록
+	"""
+	stocks(first: Int, after: String, last: Int, before: String, q: String): StockConnection!
+
+  """
+	오늘까지 모델 사용 횟수
+	"""
+	modelUsageCount: Int!
+
+	"""
+	node implements relay node refetching
+	"""
+	node(id: ID): Node
+
+  """
+	로그인 사용자
+	"""
+	viewer: User
+}
+
+type Mutation {
+	echo(input: String): String
+}

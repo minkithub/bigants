@@ -1,0 +1,70 @@
+""" 주식 종목 """
+type Stock implements Node {
+  id: ID!
+
+  """ 종목코드 """
+  code: String!
+
+  """ 종목의 한글 이름 """
+  nameKo: String!
+
+  """ 쿼리 시간 기준 가장 최근 히스토리 데이터 """
+  latestHistory: StockHistory
+
+  """
+  분석 가능한 범위의 첫날
+  """
+  predictablePeriodStart: String!
+
+  """
+  분석 가능한 범위의 마지막 날
+  """
+  predictablePeriodEnd: String!
+
+  """
+  역대 히스토리
+  """
+  history(count: Int): [StockHistory!]!
+}
+
+type StockConnection {
+  edges: [StockEdge!]!
+  pageInfo: PageInfo!
+}
+type StockEdge {
+  cursor: String!
+  node: Stock!
+}
+
+""" 일단위 주식데이터 """
+type StockHistory {
+  """ 날짜 """
+  date: String!
+
+  """ 시가 """
+  open: Float!
+
+  """ 종가 """
+  close: Float!
+
+  """ 고가 """
+  high: Float!
+
+  """ 저가 """
+  low: Float!
+
+  """ 거래량 """
+  volume: Int!
+
+  """ 상한가 """
+  highLimit: Float
+
+  """ 하한가 """
+  lowLimit: Float
+
+  """ 전일대비 가격변동 """
+  priceChange: Float
+
+  """ 전일대비 가격변동률 """
+  priceChangeRate: Float
+}

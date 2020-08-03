@@ -1,0 +1,7 @@
+{
+  "src": ".",
+  "include": ["rn/src/**/*"],
+  "exclude": ["*.d.ts"],
+  "schema": "../schema/schema.json",
+  "language": "typescript"
+}

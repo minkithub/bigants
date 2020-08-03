@@ -1,0 +1,208 @@
+schema {
+	query: Query
+	mutation: Mutation
+}
+
+type Query {
+	version: String!
+
+	"""
+	우리 앱에서 분석 가능한 주식의 목록
+	"""
+	stocks(first: Int, after: String, last: Int, before: String, q: String): StockConnection!
+
+  """
+	오늘까지 모델 사용 횟수
+	"""
+	modelUsageCount: Int!
+
+	"""
+	node implements relay node refetching
+	"""
+	node(id: ID): Node
+
+  """
+	로그인 사용자
+	"""
+	viewer: User
+}
+
+type Mutation {
+	echo(input: String): String
+}
+
+""" 주식 종목 """
+type Stock implements Node {
+  id: ID!
+
+  """ 종목코드 """
+  code: String!
+
+  """ 종목의 한글 이름 """
+  nameKo: String!
+
+  """ 쿼리 시간 기준 가장 최근 히스토리 데이터 """
+  latestHistory: StockHistory
+
+  """
+  분석 가능한 범위의 첫날
+  """
+  predictablePeriodStart: String!
+
+  """
+  분석 가능한 범위의 마지막 날
+  """
+  predictablePeriodEnd: String!
+
+  """
+  역대 히스토리
+  """
+  history(count: Int): [StockHistory!]!
+}
+
+type StockConnection {
+  edges: [StockEdge!]!
+  pageInfo: PageInfo!
+}
+type StockEdge {
+  cursor: String!
+  node: Stock!
+}
+
+""" 일단위 주식데이터 """
+type StockHistory {
+  """ 날짜 """
+  date: String!
+
+  """ 시가 """
+  open: Float!
+
+  """ 종가 """
+  close: Float!
+
+  """ 고가 """
+  high: Float!
+
+  """ 저가 """
+  low: Float!
+
+  """ 거래량 """
+  volume: Int!
+
+  """ 상한가 """
+  highLimit: Float
+
+  """ 하한가 """
+  lowLimit: Float
+
+  """ 전일대비 가격변동 """
+  priceChange: Float
+
+  """ 전일대비 가격변동률 """
+  priceChangeRate: Float
+}
+
+""" 예측 결과 """
+type StockPrediction implements Node {
+  id: ID!
+
+  """ 이 예측이 만들어진 날 """
+  created: String!
+
+  """ 이 예측이 다루고 있는 범위 첫날 (날짜형식 RFC3339)"""
+  start: String!
+
+  """ 이 예측이 다루고 있는 범위 끝날 """
+  end: String!
+
+  """ 이 예측이 다루고 있는 주식 종목 """
+  stock: Stock!
+
+  """ 예상 평균 수익률 """
+  averageIncome: Float!
+
+  """ 모델 예측 정확도 """
+  accuracy: Float!
+
+  """ 오차값(원 단위) """
+  mae: Float!
+
+  """ 각 날짜별 예측값 """
+  dailyPredictions: [StockDailyPrediction]!
+
+  requester: User
+}
+
+type StockPredictionConnection {
+  edges: [StockPredictionEdge!]!
+  pageInfo: PageInfo!
+}
+
+type StockPredictionEdge {
+  cursor: String!
+  node: StockPrediction!
+}
+
+type StockDailyPrediction {
+  """ 예측 대상 날짜 """
+  date: String!
+
+  """ 예상 주가 """
+  expectedPrice: Float!
+
+  """ 예상 수익률 """
+  expectedIncome: Float!
+}
+
+"""
+사용자
+"""
+type User implements Node {
+  id: ID!
+
+  """
+  이 사용자가 실행했던 예측들의 목록
+  """
+  predictions(first: Int, after: String, last: Int, before: String): StockPredictionConnection!
+
+  """
+  최근 조회 종목
+  """
+  recentStocks: [Stock!]!
+}
+
+"""
+새로운 예측을 생성한다.
+"""
+extend type Mutation {
+	predictionCreate(input: PredictionCreateInput!): PredictionCreatePayload
+}
+
+input PredictionCreateInput {
+	clientMutationId: ID
+  stockId: ID!
+	holidays: [String!]!
+}
+
+type PredictionCreatePayload {
+	clientMutationId: ID
+	result: StockPredictionEdge!
+}
+
+"""
+커넥션에 쓰이는 페이지네이션 정보
+"""
+type PageInfo {
+	hasNextPage: Boolean!
+	hasPreviousPage: Boolean!
+	startCursor: String
+	endCursor: String
+}
+
+"""
+Relay Node interface
+"""
+interface Node {
+	id: ID!
+}
+

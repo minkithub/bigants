@@ -1,0 +1,51 @@
+""" 예측 결과 """
+type StockPrediction implements Node {
+  id: ID!
+
+  """ 이 예측이 만들어진 날 """
+  created: String!
+
+  """ 이 예측이 다루고 있는 범위 첫날 (날짜형식 RFC3339)"""
+  start: String!
+
+  """ 이 예측이 다루고 있는 범위 끝날 """
+  end: String!
+
+  """ 이 예측이 다루고 있는 주식 종목 """
+  stock: Stock!
+
+  """ 예상 평균 수익률 """
+  averageIncome: Float!
+
+  """ 모델 예측 정확도 """
+  accuracy: Float!
+
+  """ 오차값(원 단위) """
+  mae: Float!
+
+  """ 각 날짜별 예측값 """
+  dailyPredictions: [StockDailyPrediction]!
+
+  requester: User
+}
+
+type StockPredictionConnection {
+  edges: [StockPredictionEdge!]!
+  pageInfo: PageInfo!
+}
+
+type StockPredictionEdge {
+  cursor: String!
+  node: StockPrediction!
+}
+
+type StockDailyPrediction {
+  """ 예측 대상 날짜 """
+  date: String!
+
+  """ 예상 주가 """
+  expectedPrice: Float!
+
+  """ 예상 수익률 """
+  expectedIncome: Float!
+}

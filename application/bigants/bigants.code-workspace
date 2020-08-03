@@ -1,0 +1,30 @@
+{
+	"folders": [
+		{
+			"name": "docs",
+			"path": "docs"
+		},
+		{
+			"name": "frontend",
+			"path": "frontend"
+		},
+		{
+			"name": "backend",
+			"path": "backend"
+		},
+		{
+			"path": "schema"
+		},
+		{
+			"path": "grasshopper"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"*.tmpl": "go"
+		},
+		"go.vetFlags": [
+			"-composites=false"
+		]
+	}
+}

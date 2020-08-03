@@ -1,0 +1,58 @@
+version: '3.7'
+
+services:
+  anthill:
+    build: anthill
+    image: asia.gcr.io/bigants/anthill
+    # 런타임 설정
+    environment:
+      PORT: 9012
+      ALLOWED_HOSTS: localhost
+      POSTGRES_DB: postgres
+      POSTGRES_HOST: database-prod
+      # POSTGRES_HOST: database-dev
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: OmcOKiMpLJn5N6K4
+    command: python3 manage.py runserver 0.0.0.0:9012 # 개발환경에서는 gunicorn 대신 runserver 오버라이드
+    ports:
+      - 9012:9012
+    volumes:
+      - ./anthill:/home/vmagent/app
+
+  grasshopper:
+    build: ../grasshopper
+    image: asia.gcr.io/bigants/grasshopper
+    environment:
+      - PORT=7010
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=OmcOKiMpLJn5N6K4
+      - POSTGRES_HOST=database-prod
+      # - POSTGRES_HOST=database-dev
+      - POSTGRES_PORT=5432
+      - DB_MAX_CONNECTIONS=3
+      - CORS_ALLOWED_ORIGINS=http://localhost:7010
+    ports:
+      - 7010:7010
+
+
+  database-prod:
+    image: gcr.io/cloudsql-docker/gce-proxy:1.16
+    command: /cloud_sql_proxy -instances=bigants:asia-northeast1:broccoli=tcp:0.0.0.0:5432 -credential_file=/credential.json
+    ports:
+      - 15432:5432
+    volumes:
+      # 홈 디렉토리에 bigants-1af06247cfc6.json 서비스 어카운트 키가 있어야 합니다.
+      - ~/bigants-1af06247cfc6.json:/credential.json
+
+  # database-dev:
+  #   image: postgres:12.1
+  #   environment:
+  #     POSTGRES_DB: postgres
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: OmcOKiMpLJn5N6K4
+  #   ports:
+  #     - 15432:5432
+  #   volumes:
+  #     - ./initdb.d:/docker-entrypoint-initdb.d

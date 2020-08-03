@@ -1,0 +1,18 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "update-schema",
+      "type": "shell",
+      "command": "cd ../schema && go run . && cd ../grasshopper && mergeb64 -in ../schema/schema.graphql -out ./app/gql/schema/typedef.go && go run github.com/allscape/bigants/grasshopper/scripts/inputgen -in ../schema/schema.graphql -out app/gql/schema/inputs.go"
+    },
+    {
+      "label": "pgmg",
+      "type": "shell",
+      "command": "pgmg -database='user=postgres password=OmcOKiMpLJn5N6K4 port=15432 sslmode=disable' -schema=gh -out=app/db/tables/",
+      "group": "none"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+"""
+새로운 예측을 생성한다.
+"""
+extend type Mutation {
+	predictionCreate(input: PredictionCreateInput!): PredictionCreatePayload
+}
+
+input PredictionCreateInput {
+	clientMutationId: ID
+  stockId: ID!
+	holidays: [String!]!
+}
+
+type PredictionCreatePayload {
+	clientMutationId: ID
+	result: StockPredictionEdge!
+}

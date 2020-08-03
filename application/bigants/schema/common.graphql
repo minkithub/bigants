@@ -1,0 +1,17 @@
+"""
+커넥션에 쓰이는 페이지네이션 정보
+"""
+type PageInfo {
+	hasNextPage: Boolean!
+	hasPreviousPage: Boolean!
+	startCursor: String
+	endCursor: String
+}
+
+"""
+Relay Node interface
+"""
+interface Node {
+	id: ID!
+}
+

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Ant.</title>
+    </head>
+    <body>
+        <h1>Result</h1>
+        <p>
+            RMSE: {{ rmse }}
+        </p>
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Prediction</th>
+                <th>Lower bound</th>
+                <th>Upper bound</th>
+            </tr>
+            {% for result in results %}
+                <tr>
+                    <td>{{ result.0 }}</td>
+                    <td><strong>{{ result.1 }}</strong></td>
+                    <td>{{ result.2 }}</td>
+                    <td>{{ result.3 }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+        <a href="{% url 'predictor:index' %}">Retry</a>
+    </body>
+</html>
